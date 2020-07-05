@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ osx-build ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: macos-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Set up Python 3
+    - name: Setup Python
+      uses: actions/setup-python@v2
+
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    # Runs a single command using the runners shell
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    # Runs a set of commands using the runners shell
+    - name: Build OS X Application
+      run: python3 setup.py py2app
+    
+    # Package the binary
+    - name: Build Disk Image
+      run: |
+        ln -s /Applications/ dist
+        cp DS_Store.template dist/.DS_Store
+        hdiutil create -fs HFS+ -volname Sephrasio -srcfolder dist/ -format UDRO dist/Sephrasto.dmg
+
+    - name: Archive Disk Image
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist/Sephrasto.dmg
