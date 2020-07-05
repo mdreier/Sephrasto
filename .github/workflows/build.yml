@@ -41,4 +41,4 @@ jobs:
     - name: Archive Disk Image
       uses: actions/upload-artifact@v2
       with:
-        name: dist/Sephrasto.dmg
+        path: dist/Sephrasto.dmg
