@@ -36,7 +36,6 @@ jobs:
     - name: Build Disk Image
       run: |
         ln -s /Applications/ dist
-        cp DS_Store.template dist/.DS_Store
         hdiutil create -fs HFS+ -volname Sephrasio -srcfolder dist/ -format UDRO dist/Sephrasto.dmg
 
     - name: Archive Disk Image
